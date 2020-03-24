@@ -1,24 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import GlobalStyles from './GlobalStyles';
-import Home from './Home';
-import Game from './Game';
-import useInterval from '../hooks/use-interval.hook';
-import {GameContext} from './GameContext';
-
-
+import GlobalStyles from "./GlobalStyles";
+import Home from "./Home";
+import Game from "./Game";
+import useInterval from "../hooks/use-interval.hook";
+import { GameContext } from "./GameContext";
+// import usePersistedState from "./UsePersistedState";
 
 function App(props) {
-  const {numCookies, setNumCookies, calculateCookiesPerTick} = React.useContext(
-    GameContext
-  );
+  const {
+    numCookies,
+    setNumCookies,
+    cookiesPerSecond,
+    purchasedItems
+  } = React.useContext(GameContext);
 
   useInterval(() => {
-    const numOfGeneratedCookies = calculateCookiesPerTick(purchasedItems);
-    setNumCookies(numCookies + numOfGeneratedCookies);
+    setNumCookies(numCookies + cookiesPerSecond);
   }, 1000);
-  
+
+  // usePersistedState(() => {
+    
+  // });
+
   return (
     <>
       <GlobalStyles />
