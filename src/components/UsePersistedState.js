@@ -1,29 +1,89 @@
 import React from "react";
 
-const usePersistedState = (propertyName, value) => {
-    console.log("In usePersistedState")
-    const [cookieValue, setCookieValue] = React.useState(() => {
-        const continuous = typeof window !== 'undefined' && window.localStorage.getItem(propertyName);
-        
-        return continuous !== null ? JSON.parse(continuous) : value;
+const usePersistedState = (stateObj = {}) => {
+    let byebyeTime = ''; //******************************************
+    window.onload = function(){
+        //get stored time(last unMounted time) in local storage
+
+        let timeOnLoad = new Date();
+        console.log('******* Time on Load ******** ', timeOnLoad);
+
+    //*********************** ELAPSED SECONDS ***********************
+        //calculate how many cookies would have added up
+        function timeDiff() {
+            let calculation = byebyeTime - timeOnLoad
+            calculation /=1000;
+            let secondsElapsed = Math.round(calculation);
+            console.log('Seconds elapsed: ', secondsElapsed);
+        };
+        console.log('**************timeDiff: ', timeDiff);
+
+        //then add it to numCookies
+            //check what bought and make calculations for seconds elapsed
+
+        //destroy last unMounted time
+        window.localStorage.removeItem(unmounted);
+    //****************************************************************
+    }
+
+  // if first time, then local storage would be undefined
+  if (
+    window.localStorage.getItem("state") === undefined ||
+    window.localStorage.getItem("state") === null, 
+
+    window.localStorage.getItem("unmounted") === undefined ||
+    window.localStorage.getItem("unmounted") === null //***************
+  ) {
+
+    // default state
+    console.log("Default state added");
+    stateObj = {
+      numCookies: 1000,
+      purchasedItems: { cursor: 0, grandma: 0, farm: 0 }
+    };
+    window.localStorage.setItem('unmounted', ''); //*****
+
+  } else {
+    //------------------------------------------------------------- NORMAL
+    stateObj = JSON.parse(window.localStorage.getItem("state"));
+
+    //------------------------------------------------------------- RESET
+    // stateObj = {numCookies: 1000,
+    //     purchasedItems: { cursor: 0, grandma: 0, farm: 0 }
+    // };
+    //     unmounted = ''
+    //-------------------------------------------------------------
+    console.log("**Getting stateObj from local storage: ", stateObj);
+  }
+
+  const [state, setState] = React.useState(stateObj);
+  const [unmounted, setUnmounted] = React.useState(unmounted); //************************
+
+  const setPersistedState = givenStateObj => {
+    console.log("*Setting persisted state: ", givenStateObj);
+
+    window.localStorage.setItem("state", JSON.stringify(givenStateObj));
+    setState(givenStateObj);
+
+    //*********************** STORE UNMOUNT DATE IN LOCAL STORAGE ***********************
+    window.addEventListener('beforeunload', (event) => {
+        window.localStorage.getItem("unmounted"); 
+        event.returnValue = `Unmounting`;
+        console.log('Unmounting');
+    
+        let unmountTime = new Date();
+        byebyeTime = unmountTime;
+        console.log('~~~~ Time unmounted ~~~~ ', unmountTime);
+
+        window.localStorage.setItem("unmounted", JSON.stringify(unmountTime));
+        setUnmounted(unmounted);
+        console.log('unmounted: ', unmounted);
     });
+    //************************************************************************************
+  };
 
-    React.useEffect(() => {
-        console.log("In usePersistedState useEffect")
-        window.localStorage.setItem(propertyName, JSON.stringify(cookieValue));
-        return () => {
-            console.log("In usePersistedState Closing")
-            window.localStorage.setItem(propertyName, JSON.stringify(cookieValue));
-        }
-    }, [propertyName, value]);
+  return [state, setPersistedState];
+};
 
-    return [cookieValue, setCookieValue];
-}
-console.log('localStorage: ', window.localStorage);
+console.log("localStorage: ", window.localStorage);
 export default usePersistedState;
-
-//use persisted state + local storage  MAYBE USE window.localstorage
-//store date then calculate how much time passed to calculate how many cookies
-//to add. Review: Use effect, Use context, Set state videos.
-
-//JSON stringify.value THEN parse for .get

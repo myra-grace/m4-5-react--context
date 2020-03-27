@@ -6,23 +6,18 @@ import Home from "./Home";
 import Game from "./Game";
 import useInterval from "../hooks/use-interval.hook";
 import { GameContext } from "./GameContext";
-// import usePersistedState from "./UsePersistedState";
 
 function App(props) {
+  console.log("PROPS ", props)
   const {
     numCookies,
     setNumCookies,
     cookiesPerSecond,
-    purchasedItems
   } = React.useContext(GameContext);
 
   useInterval(() => {
     setNumCookies(numCookies + cookiesPerSecond);
   }, 1000);
-
-  // usePersistedState(() => {
-    
-  // });
 
   return (
     <>
