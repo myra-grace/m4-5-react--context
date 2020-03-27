@@ -57,18 +57,19 @@ By _lifting state up_ to a parent or grandparent, we can pass that data around v
 
 Solve me:
 
-```js
+```js  FIXED
 const App = () => {
+    const [searchTerm, setSearchTerm] = React.useState('');
+
   return (
     <>
-      <Header />
-      <MainContent />
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+      <MainContent searchTerm={searchTerm}/>
     </>
   );
 };
 
-const Header = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
+const Header = ({searchTerm, setSearchTerm}) => {
 
   return (
     <header>
@@ -78,7 +79,7 @@ const Header = () => {
   );
 };
 
-const MainContent = () => {
+const MainContent = ({searchTerm}) => {
   return (
     <main>
       {/* how do I access `searchTerm`? */}

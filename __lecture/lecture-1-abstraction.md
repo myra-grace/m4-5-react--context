@@ -116,24 +116,15 @@ const Banner = ({ type, message, user }) => {
     </div>
   );
 };
+//so you would make a component that checks if used logged in then calls the banner component.
 ```
 
 ---
 
-```js
-const ContactPage = () => {
-  const [message, setMessage] = React.useState('');
-  const [messageError, setMessageError] = React.useState(false);
-
+```js  FIXED
+const TextArea = () => {
   return (
-    <div>
-      <Header />
-
-      <h1>Contact Us</h1>
-      <p>
-        We're looking forward to hearing from you. Please fill in this contact
-        form:
-      </p>
+    <>
 
       <label>
         Message:
@@ -153,6 +144,23 @@ const ContactPage = () => {
       {messageError && (
         <p className="error">Please enter at least 100 characters.</p>
       )}
+    </>)
+}
+
+const ContactPage = () => {
+  const [message, setMessage] = React.useState('');
+  const [messageError, setMessageError] = React.useState(false);
+
+  return (
+    <div>
+    <Header />
+
+      <h1>Contact Us</h1>
+      <p>
+        We're looking forward to hearing from you. Please fill in this contact
+        form:
+      </p>
+      <TextArea/>
     </div>
   );
 };

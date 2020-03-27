@@ -6,6 +6,7 @@ import useInterval from '../hooks/use-interval.hook';
 
 import cookieSrc from '../cookie.svg';
 import Item from './Item';
+import { GameContext } from "./GameContext";
 
 const items = [
   { id: 'cursor', name: 'Cursor', cost: 10, value: 1 },
@@ -24,16 +25,15 @@ const calculateCookiesPerSecond = purchasedItems => {
 };
 
 const Game = () => {
-  const [numCookies, setNumCookies] = React.useState(1000);
-
-  const [purchasedItems, setPurchasedItems] = React.useState({
-    cursor: 0,
-    grandma: 0,
-    farm: 0
-  });
+  const {
+    numCookies,
+    setNumCookies,
+    purchasedItems,
+    setAll
+  } = React.useContext(GameContext);
 
   const incrementCookies = () => {
-    setNumCookies(c => c + 1);
+    setNumCookies(numCookies + 1);
   };
 
   useInterval(() => {
@@ -51,18 +51,19 @@ const Game = () => {
   }, [numCookies]);
 
   React.useEffect(() => {
-    const handleKeydown = ev => {
+    const handleKeyup = ev => {
       if (ev.code === 'Space') {
         incrementCookies();
       }
     };
 
-    window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('keyup', handleKeyup);
 
     return () => {
-      window.removeEventListener('keydown', handleKeydown);
+      window.removeEventListener('keyup', handleKeyup);
     };
   });
+  
 
   return (
     <Wrapper>
@@ -93,12 +94,15 @@ const Game = () => {
                   alert('Cannot afford item');
                   return;
                 }
-
-                setNumCookies(numCookies - item.cost);
-                setPurchasedItems({
+                setAll(numCookies - item.cost, {
                   ...purchasedItems,
                   [item.id]: purchasedItems[item.id] + 1
-                });
+                })
+                // setNumCookies(numCookies - item.cost);
+                // setPurchasedItems({
+                //   ...purchasedItems,
+                //   [item.id]: purchasedItems[item.id] + 1
+                // });
               }}
             />
           );
